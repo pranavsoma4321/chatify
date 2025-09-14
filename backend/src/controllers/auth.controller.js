@@ -3,6 +3,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { generateToken } from '../../lib/utils.js';
 import express from 'express';
+import dotenv from 'dotenv';
+import { sendwelcomeEmail } from '../emails/emailHandler.js';
 
 const app = express();
 
@@ -53,8 +55,8 @@ export const signup = async (req, res) => {
         });
 
         if (newUser) {
-            generateToken(newUser._id, res);
-            await newUser.save();
+            const savedUser = await newUser.save();
+            generateToken(savedUser._id, res);
 
             res.status(201).json({
                 _id: newUser._id,
@@ -63,6 +65,15 @@ export const signup = async (req, res) => {
                 profilePic: newUser.profilePic,
                 message: "User created successfully"
             });
+
+            // todo: send welcome email here
+
+            try{
+                await sendwelcomeEmail(savedUser.email, savedUser.fullname, process.env.CLIENT_URL);
+            } catch (error) {
+                console.error("Error sending welcome email:", error);
+            }
+
         } else {
             return res.status(400).json({ message: "Error creating user" });
         }
