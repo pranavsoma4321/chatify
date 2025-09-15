@@ -4,6 +4,7 @@ import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
 import path from 'path';
 import { connectDB } from '../lib/db.js';
+import cookieStore from 'cookie-parser';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const __dirname = path.resolve();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.json()); // req.body
+app.use(cookieStore());
 
 console.log(process.env.PORT);
 
