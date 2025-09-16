@@ -1,12 +1,16 @@
 import express from 'express';
 import { signup , login, logout, updateProfile} from '../controllers/auth.controller.js';
-import { protectRoute } from './middleware/auth.middleware.js';
+import { protectRoute } from '../../middleware/auth.middleware.js';
+import { authRateLimiter } from '../../middleware/ratelimit.middleware.js';
+
 
 const router = express.Router();
 
-router.post('/signup', signup )
-router.post('/signin', login )
-router.post('/signout', logout )
+router.use(authRateLimiter);
+
+router.post('/signup',   signup )
+router.post('/signin',  login )
+router.post('/signout',  logout )
 
 router.put('/update-profile', protectRoute, updateProfile)
 
