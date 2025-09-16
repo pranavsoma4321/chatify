@@ -1,6 +1,8 @@
-import { V2 as cloudinary } from 'cloudinary';    
+import { v2 as cloudinary } from 'cloudinary';
 import { ENV } from './env.js';
-import cloudinary from './cloudinary';
+
+// Remove this duplicate import:
+// import cloudinary from './cloudinary';
 
 cloudinary.config({
     cloud_name: ENV.CLOUDINARY_NAME,
