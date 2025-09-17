@@ -9,8 +9,8 @@ const router = express.Router();
 router.use(authRateLimiter);
 
 router.post('/signup',   signup )
-router.post('/signin',  login )
-router.post('/signout',  logout )
+router.post('/login',  login )
+router.post('/logout',  logout )
 
 router.put('/update-profile', protectRoute, updateProfile)
 
