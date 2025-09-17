@@ -1,13 +1,78 @@
-import {create} from 'zustand';
+import { create } from 'zustand';
+import { axiosInstance } from '../lib/axios';
+import toast from "react-hot-toast";
+export const useAuthStore = create((set, get) => ({
+    authUser: null,
+    isCheckingAuth: false,
+    isSigningUp: false,
 
-export const useAuthStore = create((set) => ({
-    authUser: {name: "john", _id:123, age:25},
-    isLoading: false,
-    isLoggedIn: false,
-
-    login: () => {
-        console.log("We just Logged in");
-        set({isLoggedIn: true, isLoading: true});
+    checkAuth: async () => {
+        try {
+            const res = await axiosInstance.get("/auth/check");
+            set({ authUser: res.data });
+            get().connectSocket();
+        } catch (error) {
+            console.log("Error in authCheck:", error);
+            set({ authUser: null });
+        } finally {
+            set({ isCheckingAuth: false });
+        }
     },
+
+    // src/store/useAuthStore.js
+    signup: async (data) => {
+        set({ isSigningUp: true });
+        try {
+            const res = await axiosInstance.post("/auth/signup", data); // matches backend
+            set({ authUser: res.data });
+            toast.success("Account created successfully!");
+        } catch (error) {
+            console.error("Signup error full:", error); // will now show detailed info
+            toast.error(error?.response?.data?.message || "Signup failed. Please try again.");
+        } finally {
+            set({ isSigningUp: false });
+        }
+    },
+
+    login: async (credentials) => {
+     set({ isLoggingIn: true });
+
+  try {
+    const response = await axiosInstance.post("/auth/login", credentials);
+    const userData = response.data;
+
+    set({ authUser: userData });
+    toast.success("✅ Logged in successfully");
+
+    // Connect socket only if login is successful
+    if (get().connectSocket) {
+      get().connectSocket();
+    }
+
+  } catch (error) {
+    console.error("Login error:", error);
+
+    // Handle server-side or network errors gracefully
+    const errorMessage =
+      error.response?.data?.message || "Something went wrong. Please try again.";
+
+    toast.error(errorMessage);
+  } finally {
+    set({ isLoggingIn: false });
+  }
+},
+
+    logout: async() => {
+        try {
+            await axiosInstance.post("/auth/logout");
+            set({authUser: null})
+            toast.success("logged out succefully")
+        } catch (error) {
+            toast.error("Error logging out");
+            console.log("logout error", error);
+        }
+    }
 }));
+
+
 
