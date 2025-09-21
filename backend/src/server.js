@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 // Import your existing rate limiters
-import { authRateLimiter, apiRateLimiter } from '../middleware/rateLimit.middleware.js';
+import { authRateLimiter, apiRateLimiter } from "../middleware/rateLimit.middleware.js";
 
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
