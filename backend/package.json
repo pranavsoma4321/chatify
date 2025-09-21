@@ -14,14 +14,16 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "chat-app": "file:..",
-    "cloudinary": "^2.5.1",
+    "cloudinary": "^2.7.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "dotenv": "^16.4.7",
+    "dotenv": "^16.6.1",
     "express": "^4.21.2",
     "express-rate-limit": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.10.1",
-    "resend": "^6.0.2"
+    "multer": "^2.0.2",
+    "resend": "^6.0.2",
+    "streamifier": "^0.1.1"
   }
 }

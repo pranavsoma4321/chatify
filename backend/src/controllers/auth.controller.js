@@ -5,6 +5,7 @@ import { generateToken } from '../../lib/utils.js';
 import express from 'express';
 import dotenv from 'dotenv';
 import { sendwelcomeEmail } from '../emails/emailHandler.js';
+import cloudinary from "../../lib/cloudinary.js"
 
 const app = express();
 
@@ -121,23 +122,46 @@ export const logout = async (_, res) =>  {
     res.status(200).json({message: "Logged out successfully"});
 };
 
+
 export const updateProfile = async (req, res) => {
-    try {
-        const { profilePic } = req.body;
-        if(!profilePic) return res.status(400).json({message: "Profile picture is required"});
+  try {
+    const userId = req.body.userId; // or get from auth middleware
+    let profilePicUrl;
 
-        const userId = req.user._id;
-
-        const uploadResponce = await cloudinary.uploader.upload(profilePic)
-
-        const updatedUser = await User.findByIdAndUpdate(
-            userId, { profilePic: uploadResponce.secure_url }, 
-            { new: true });
-
-        res.status(200).json("Profile updated successfully");
-        
-    }catch (error) {
-        console.error("Update profile error:", error);
-        return res.status(500).json({ message: "Error in updating profile", error: error.message });
+    if (req.file) {
+      const result = await new Promise((resolve, reject) => {
+        const stream = cloudinary.v2.uploader.upload_stream(
+          { folder: 'chat-app-profiles', resource_type: 'auto' },
+          (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+          }
+        );
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
+      profilePicUrl = result.secure_url;
     }
-}
+
+    // Update user in DB
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { 
+        ...req.body, // name, email, etc.
+        ...(profilePicUrl && { profilePic: profilePicUrl })
+      },
+      { new: true }
+    );
+
+    res.status(200).json({ message: 'Profile updated', user: updatedUser });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
+
+
+
+
