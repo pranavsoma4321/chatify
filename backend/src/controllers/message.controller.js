@@ -1,6 +1,6 @@
 import User from "../models/User.js";
 import cloudinary from "../../lib/cloudinary.js";
-import Message from "../models/message.js";
+import Message from "../models/Message.js";
 
 
 export const getAllContacts = async (req, res) => {
