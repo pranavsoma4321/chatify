@@ -8,7 +8,7 @@ import ContactList from "../components/ContactList";
 import NoConversionPlaceholder from "../components/NoConversionPlaceholder";
 
 function ChatPage() {
-  const { active , selectedUser} = useChatStore();
+  const { activeTab , selectedUser} = useChatStore();
   return (
     <div className='relative w-full max-w-6xl h-[800px]'>
 
@@ -19,7 +19,7 @@ function ChatPage() {
           <ActiveTabSwitch />
 
           <div className="flex-1 overflow-y-auto p-4 space=y-2">
-            { active === "chats" ? <ChatsList /> : <ContactList />}
+            { activeTab === "chats" ? <ChatsList /> : <ContactList />}
 
           </div>
         </div>
