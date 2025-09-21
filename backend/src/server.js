@@ -7,7 +7,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 
 // Import your existing rate limiters
-import { authRateLimiter, apiRateLimiter } from "../middleware/rateLimit.middleware.js";
+/*import { authRateLimiter, apiRateLimiter } from "../middleware/rateLimit.middleware.js";*/
 
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
@@ -32,8 +32,8 @@ app.use(cors({
 app.use(cookieParser());
 
 // --- Apply Rate Limiting using YOUR existing limiters ---
-app.use('/api/', apiRateLimiter); // Apply general limiter to all API routes
-app.use('/api/auth', authRateLimiter); // Apply auth-specific limiter
+app.use('/api/' , authRoutes ); // Apply general limiter to all API routes
+app.use('/api/auth' , authRoutes ); // Apply auth-specific limiter
 
 // --- Logging for debugging network issues ---
 app.use((req, res, next) => {
